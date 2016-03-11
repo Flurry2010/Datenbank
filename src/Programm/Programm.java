@@ -2,6 +2,9 @@ package Programm;
 
 import Datenbank.Datenbank;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -30,6 +33,16 @@ public class Programm {
             db.insertOrUpdate("Flurry", 10815);
             db.insertOrUpdate("Uwe", 4711);
             db.insertOrUpdate("Uwe", 4712);
+
+            try {
+                FileInputStream fis = new FileInputStream("Deadpool.jpeg");
+                db.insertOrUpdateBlob("Flurry",fis);
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
             //selectabfrage
             db.printTable("test");
         } catch (SQLException e) {

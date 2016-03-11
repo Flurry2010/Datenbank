@@ -1,6 +1,8 @@
 package Datenbank;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
@@ -165,7 +167,18 @@ public class Datenbank {
     }//fickt euch allekgh
 
 
+    public void insertOrUpdateBlob(String name, InputStream is) throws SQLException{
+        PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO blob VALUES (?,?)"
+        );
 
+        try {
+            ps.setString(1,name);
+            ps.setBinaryStream(2, is);
+            ps.executeUpdate();
+        }catch (SQLException e){
 
+        }
+    }
 }
 
