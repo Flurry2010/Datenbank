@@ -2,8 +2,10 @@ package Programm;
 
 import Datenbank.Datenbank;
 
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -39,6 +41,26 @@ public class Programm {
                 db.insertOrUpdateBlob("Flurry",fis);
                 fis.close();
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                FileInputStream fis = new FileInputStream("sound.png");
+                db.insertOrUpdateBlob("Flurry",fis);
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                Icon icon = new ImageIcon(
+                        ImageIO.read(db.getBlob("Flurry")));
+                JOptionPane.showMessageDialog(
+                        null,"Tolles Bid aus der DB", "Bildanzeige", JOptionPane.INFORMATION_MESSAGE, icon
+                );
+
+            }catch (IOException e){
                 e.printStackTrace();
             }
 

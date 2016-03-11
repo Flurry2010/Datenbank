@@ -88,7 +88,7 @@ public class Datenbank {
                         " name VARCHAR," +
                         " blob BYTEA," +
                         " PRIMARY KEY (name)," +
-                        " FOREIGN KEY (name) REFERENCES test(name)"+
+                        " FOREIGN KEY (name) REFERENCES test(name)" +
                         ")"
         );
     }
@@ -160,25 +160,50 @@ public class Datenbank {
         for (int i = 0; i < tabelle.get(0).size(); i++) {
             String s = "";
             for (int j = 0; j < col; j++) {
-                s += "]"+String.format("%-"+max[j]+"s",tabelle.get(j).get(i));
+                s += "]" + String.format("%-" + max[j] + "s", tabelle.get(j).get(i));
             }
-            System.out.println(s+"]");
+            System.out.println(s + "]");
         }
     }//fickt euch allekgh
 
 
-    public void insertOrUpdateBlob(String name, InputStream is) throws SQLException{
-        PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO blob VALUES (?,?)"
-        );
+    public void insertOrUpdateBlob(String name, InputStream is) throws SQLException {
 
-        try {
-            ps.setString(1,name);
-            ps.setBinaryStream(2, is);
+        Statement stmt = conn.createStatement();
+        ResultSet r = stmt.executeQuery(
+                "SELECT name" +
+                        " FROM blob" +
+                        " WHERE name='" + name + "'");
+
+        if(r.next()){
+            PreparedStatement ps = conn.prepareStatement(
+                            "UPDATE blob" +
+                            " SET blob = ?" +
+                            " WHERE name='"+name+"'");
+            ps.setBinaryStream(1, is);
             ps.executeUpdate();
-        }catch (SQLException e){
 
         }
+        else{
+            PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO blob VALUES (?,?)"
+            );
+            ps.setString(1, name);
+            ps.setBinaryStream(2, is);
+            ps.executeUpdate();
+        }
+    }
+
+    public InputStream getBlob(String name) throws SQLException {
+        Statement stmt = conn.createStatement();
+        ResultSet r = stmt.executeQuery(
+                        "SELECT blob" +
+                        " FROM blob " +
+                        " WHERE name='" + name + "'"
+        );
+        if (r.next())
+            return r.getBinaryStream(1);
+        return null;
     }
 }
 
